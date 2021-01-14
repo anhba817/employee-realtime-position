@@ -1,33 +1,29 @@
-import { createMuiTheme, responsiveFontSizes } from '@material-ui/core/styles';
-import { green, grey, red } from '@material-ui/core/colors';
-import { viVN } from '@material-ui/core/locale';
+import { createMuiTheme } from "@material-ui/core/styles";
+import { green, red } from "@material-ui/core/colors";
+import { viVN } from "@material-ui/core/locale";
 
-const rawTheme = createMuiTheme(
+const theme = createMuiTheme(
   {
     palette: {
+      // type: 'dark',
       primary: {
-        light: '#69696a',
-        main: '#28282a',
-        dark: '#1e1e1f',
+        light: "rgb(0, 219, 176)",
+        main: 'rgb(0, 158, 127)',
+        dark: "rgb(1, 112, 90)",
+        contrastText: "rgb(255, 255, 255)",
       },
       secondary: {
-        light: '#fff5f8',
-        main: '#05d2c7',
-        dark: '#0000ff',
-        // light: '#fff5f8',
-        // main: '#a947ff',
-        // dark: '#8f0fff',
-        // light: '#fff5f8',
-        // main: '#ff3366',
-        // dark: '#e62958',
+        light: "rgb(48, 64, 209)",
+        main: "rgb(13, 17, 54)",
+        dark: "rgb(4, 8, 43)",
       },
       warning: {
-        main: '#ffc071',
-        dark: '#ffb25e',
+        main: "#ffc071",
+        dark: "#ffb25e",
       },
       error: {
         xLight: red[50],
-        main: red[500],
+        main: 'rgb(255, 91, 96)',
         dark: red[700],
       },
       success: {
@@ -35,85 +31,67 @@ const rawTheme = createMuiTheme(
         main: green[500],
         dark: green[700],
       },
+      text: {
+        primary: "rgb(13, 17, 54)",
+      },
+      background: {
+        default: 'rgb(237, 237, 237)',
+        light: 'rgb(228, 244, 252)',
+        grey: "rgb(119, 121, 140)",
+      }
     },
     typography: {
-      fontFamily: "'Work Sans', sans-serif",
-      fontSize: 14,
+      fontFamily: "'Lato', sans-serif",
       fontWeightLight: 300, // Work Sans
       fontWeightRegular: 400, // Work Sans
       fontWeightMedium: 700, // Roboto Condensed
-      fontFamilySecondary: "'Roboto Condensed', sans-serif",
+      fontFamilySecondary: "'Lato', sans-serif",
+      textTransform: "none",
+      color: "rgb(13, 17, 54)",
+      fontWeight: 700,
+      fontSize: 13,
+      h2: {
+        fontWeight: 700,
+        fontSize: 45,
+        color: "rgb(13, 17, 54)",
+      },
+      h3: {
+        color: "rgb(119, 121, 140)",
+        fontSize: 24,
+      },
+      h5: {
+        color: "rgb(13, 17, 54)",
+        fontSize: 15,
+        fontWeight: 700,
+      },
+      h6: {
+        color: "rgb(119, 121, 140)",
+        fontSize: 13,
+      },
+      body1: {
+        color: "rgb(13, 17, 54)",
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 400,
+        fontSize: 13,
+      },
+      body2: {
+        color: "rgb(119, 121, 140)",
+        fontFamily: "'Lato', sans-serif",
+        fontWeight: 400,
+        fontSize: 13,
+      }
+    },
+    breakpoints: {
+      values: {
+        xs: 0,
+        sm: 767,
+        md: 990,
+        lg: 1200,
+        xl: 1920,
+      },
     },
   },
   viVN
 );
 
-const fontHeader = {
-  color: rawTheme.palette.text.primary,
-  fontWeight: rawTheme.typography.fontWeightMedium,
-  fontFamily: rawTheme.typography.fontFamilySecondary,
-  textTransform: 'uppercase',
-};
-
-const theme = {
-  ...rawTheme,
-  palette: {
-    ...rawTheme.palette,
-    background: {
-      ...rawTheme.palette.background,
-      default: rawTheme.palette.common.white,
-      placeholder: grey[200],
-    },
-  },
-  typography: {
-    ...rawTheme.typography,
-    fontHeader,
-    h1: {
-      ...rawTheme.typography.h1,
-      ...fontHeader,
-      letterSpacing: 0,
-      fontSize: 60,
-    },
-    h2: {
-      ...rawTheme.typography.h2,
-      ...fontHeader,
-      fontSize: 48,
-    },
-    h3: {
-      ...rawTheme.typography.h3,
-      ...fontHeader,
-      fontSize: 42,
-    },
-    h4: {
-      ...rawTheme.typography.h4,
-      ...fontHeader,
-      fontSize: 36,
-    },
-    h5: {
-      ...rawTheme.typography.h5,
-      fontSize: 20,
-      fontWeight: rawTheme.typography.fontWeightLight,
-    },
-    h6: {
-      ...rawTheme.typography.h6,
-      ...fontHeader,
-      fontSize: 18,
-    },
-    subtitle1: {
-      ...rawTheme.typography.subtitle1,
-      fontSize: 18,
-    },
-    body1: {
-      ...rawTheme.typography.body2,
-      fontWeight: rawTheme.typography.fontWeightRegular,
-      fontSize: 16,
-    },
-    body2: {
-      ...rawTheme.typography.body1,
-      fontSize: 14,
-    },
-  },
-};
-
-// export default theme;
-export default responsiveFontSizes(theme);
+export default theme;

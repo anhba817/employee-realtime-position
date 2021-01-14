@@ -2,21 +2,18 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import Card from "@material-ui/core/Card";
+import CardMedia from "@material-ui/core/CardMedia";
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
 import EditIcon from "@material-ui/icons/Edit";
 import ConfirmationDialog from "../ConfirmationDialog/index";
-import FormDialog from "../FormDialog/index";
 import styles from "./styles";
 
 class EditableMap extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      title: "",
-      name: "",
-      value: "",
       openDeleteDialog: false,
       openEditDialog: false,
     };
@@ -52,11 +49,10 @@ class EditableMap extends Component {
     const {
       classes,
       active,
-      type,
       className,
       editable,
       deletable,
-      content,
+      mapInfo,
       onClick,
     } = this.props;
     const { openDeleteDialog, openEditDialog } = this.state;
@@ -65,13 +61,13 @@ class EditableMap extends Component {
         className={clsx(classes.container, className, {
           [classes.active]: active,
         })}
-        elevation={0}
         onClick={onClick}
       >
-        {content.hasOwnProperty('label') ? (
-          <Typography variant="body1" className={classes.label}>{content.label}</Typography>
-        ) : null}
-        <Typography variant="body2" className={classes.content}>{content.value}</Typography>
+        <CardMedia
+          className={classes.media}
+          image={mapInfo.img_url}
+          title={mapInfo.name}
+        />
         <span className={clsx(classes.buttonWrapper, "hidden-button")}>
           {editable ? (
             <IconButton
@@ -92,7 +88,7 @@ class EditableMap extends Component {
         </span>
         <ConfirmationDialog
           open={openDeleteDialog}
-          title={`Are you sure you want to delete this ${type} ?`}
+          title={`Are you sure you want to delete this map ?`}
           text="You cannot undo this deletion"
           handleClose={this.handleCloseDeleteDialog}
           handleOKClick={this.handleDelete}

@@ -5,17 +5,36 @@ import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
 import * as mapActions from "../../actions/map";
 import styles from "./styles";
+import EditableMap from "../../components/EditableMap/index";
+import AddButton from "../../components/AddButton/index";
 
 class MapManagement extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedIndex: 0,
+    };
+  }
+
+  setActiveIndex = (index) => {
+    this.setState({ selectedIndex: index });
+  };
+
   render() {
     const { classes, maps } = this.props;
+    const { selectedIndex } = this.state;
     return (
-      <div>
-        {maps.map((m) => (
-          <div key={m.name}>
-            <img src={m.img_url} width={200}/>
-            <span>{m.name}</span>
-          </div>
+      <div className={classes.container}>
+        <AddButton />
+        {maps.map((m, index) => (
+          <EditableMap
+            key={m.name}
+            mapInfo={m}
+            active={index === selectedIndex}
+            onClick={() => this.setActiveIndex(index)}
+            editable
+            deletable
+          />
         ))}
       </div>
     );
@@ -42,5 +61,5 @@ const mapDispatchToProps = (dispatch) => {
 
 export default compose(
   withStyles(styles),
-  connect(mapStateToProps, mapDispatchToProps),
+  connect(mapStateToProps, mapDispatchToProps)
 )(MapManagement);

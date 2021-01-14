@@ -1,10 +1,13 @@
 const styles = (theme) => ({
   container: {
+    flex: "0 0 33.3333%",
+    maxWidth: "30%",
+    minWidth: 200,
+    height: "max-content",
     display: 'inline-flex',
     flexDirection: 'column',
     textAlign: 'left',
-    alignItems: 'flex-start',
-    padding: 15,
+    margin: 15,
     position: 'relative',
     lineHeight: 24,
     cursor: 'pointer',
@@ -17,6 +20,14 @@ const styles = (theme) => ({
     "&:hover .hidden-button": {
       display: "flex"
     },
+    [theme.breakpoints.down("xs")]: {
+      flex: "0 0 50%",
+      maxWidth: "100%",
+    },
+  },
+  media: {
+    width: '100%',
+    height: 200,
   },
   active: {
     border: '1px solid',
