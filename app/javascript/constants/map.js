@@ -13,3 +13,8 @@ export const EDIT_MAP_FAILED = 'SIGN_UP_FAILED';
 export const DELETE_MAP = 'DELETE_MAP';
 export const DELETE_MAP_SUCCESS = 'DELETE_MAP_SUCCESS';
 export const DELETE_MAP_FAILED = 'DELETE_MAP_FAILED';
+
+export const ADD_ANCHOR = 'ADD_ANCHOR';
+export const UPDATE_ANCHOR = 'UPDATE_ANCHOR';
+export const DELETE_ANCHOR = 'DELETE_ANCHOR';
+export const CLEAR_ANCHORS = 'CLEAR_ANCHORS';

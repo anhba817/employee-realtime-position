@@ -20,6 +20,9 @@ class Sidebar extends Component {
     return (
       <List className={classes.list}>
         {routes.map((route, key) => {
+          if(! route.listed) {
+            return null;
+          }
           const whiteFontClasses = classNames({
             [" " + classes.whiteFont]: match.path === route.path,
           });
