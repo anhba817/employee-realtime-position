@@ -1,0 +1,2 @@
+export const SET_CSRF_TOKEN = 'SET_CSRF_TOKEN';
+export const CLEAR_CSRF_TOKEN = 'CLEAR_CSRF_TOKEN';

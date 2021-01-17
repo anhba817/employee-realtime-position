@@ -9,7 +9,7 @@ import MapEditor from '../../components/MapEditor/index';
 import AnchorsEditor from '../../components/AnchorsEditor/index';
 import styles from "./styles";
 
-const steps = ["Select picture", "Add anchors", "Review and add new map"];
+const steps = ["Upload floor map", "Add anchors"];
 
 function getStepContent(step) {
   switch (step) {
@@ -17,8 +17,6 @@ function getStepContent(step) {
       return <MapEditor />;
     case 1:
       return <AnchorsEditor />;
-    case 2:
-      return <div>This is the bit I really care about!</div>;
     default:
       return <div>Unknown step</div>;
   }

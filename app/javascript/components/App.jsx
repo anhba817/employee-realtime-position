@@ -8,14 +8,17 @@ import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, compose } from "redux";
 import { connect } from "react-redux";
 import * as mapActions from "../actions/map";
+import * as commonActions from "../actions/common";
 import { ROUTES } from "./routes";
 import theme from "./theme";
 import Admin from "../layouts/Admin/index";
 
 class App extends Component {
   componentDidMount() {
-    const { mapActionCreators } = this.props;
+    const { mapActionCreators, commonActionCreators } = this.props;
     mapActionCreators.getAllMaps();
+    const token = document.querySelector('meta[name="csrf-token"]').content;
+    commonActionCreators.setCrsfToken(token);
   }
 
   renderRoutes = (routs) => {
@@ -55,6 +58,7 @@ App.propTypes = {
 const mapDispatchToProps = (dispatch) => {
   return {
     mapActionCreators: bindActionCreators(mapActions, dispatch),
+    commonActionCreators: bindActionCreators(commonActions, dispatch),
   };
 };
 

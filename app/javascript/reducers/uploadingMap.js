@@ -43,6 +43,9 @@ const uploadingMapReducer = (state = initialState, action) => {
       };
     case uploadingMapConstants.ADD_NEW_ANCHOR:
       tmpAnchors = state.anchors;
+      tmpAnchors = tmpAnchors.filter(
+        (anchor) => anchor.anchorId !== action.payload.anchorId
+      );
       tmpAnchors.push({
         id: uuidv4(),
         anchorId: action.payload.anchorId,

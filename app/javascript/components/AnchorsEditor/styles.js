@@ -9,8 +9,8 @@ const styles = (theme) => ({
   gridItemText: {
     display: 'flex',
     flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'flex-start',
+    justifyContent: 'center',
+    alignItems: 'center',
     marginTop: 16,
   },
   image: {

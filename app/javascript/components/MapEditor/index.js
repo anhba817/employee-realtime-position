@@ -55,6 +55,17 @@ class MapEditor extends Component {
     const { classes, uploadingMap } = this.props;
     const { name, ratio } = this.state;
     const images = uploadingMap.image? [uploadingMap.image]: [];
+    let img_width = "100%";
+    if(uploadingMap.size[0] !== 0) {
+      let img_height = Math.floor(
+        (1000 * uploadingMap.size[1]) / uploadingMap.size[0]
+      );
+      if (img_height > 500) {
+        img_width = Math.floor(
+          (500 * uploadingMap.size[0]) / uploadingMap.size[1]
+        );
+      }
+    }
     return (
       <Grid container spacing={1} style={{ padding: 8 }}>
         <Grid item xs={12} className={classes.gridItem}>
@@ -94,7 +105,7 @@ class MapEditor extends Component {
                   {imageList.length > 0 ? (
                     <img
                       src={imageList[0].data_url}
-                      style={{ margin: 10, width: "100%" }}
+                      style={{ margin: 10, width: img_width }}
                       alt=""
                       onLoad={this.onImgLoad}
                     />
@@ -127,6 +138,7 @@ class MapEditor extends Component {
             onChange={this.handleChange}
             value={name}
             fullWidth
+            size="small"
           />
         </Grid>
         <Grid item xs={4} className={classes.gridItem}>
@@ -138,6 +150,7 @@ class MapEditor extends Component {
             onChange={this.handleChange}
             value={ratio}
             fullWidth
+            size="small"
           />
         </Grid>
       </Grid>

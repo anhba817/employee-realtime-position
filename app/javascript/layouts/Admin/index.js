@@ -79,14 +79,6 @@ class Admin extends Component {
           <div className={classes.content}>
             <div className={classes.container}>{children}</div>
           </div>
-          <input
-            type="file"
-            accept="image/*"
-            multiple={false}
-            onChange={this.onImageChange}
-          />
-          <button onClick={() => this.uploadImage()}>Upload Image</button>
-          <button onClick={() => this.updateImage()}>Update Image</button>
         </PerfectScrollbar>
       </div>
     );
