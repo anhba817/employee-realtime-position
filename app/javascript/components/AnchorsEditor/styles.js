@@ -4,14 +4,14 @@ const styles = (theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
   },
   gridItemText: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
   },
   image: {
     padding: 0,
@@ -20,6 +20,12 @@ const styles = (theme) => ({
   imageActive: {
     border: '1px solid',
     borderColor: theme.palette.primary.main,
+  },
+  anchorList: {
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'flex-start',
+    marginTop: 8,
   },
 });
 

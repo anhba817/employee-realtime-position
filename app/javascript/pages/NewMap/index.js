@@ -1,15 +1,16 @@
-import React, { Component } from "react";
-import PropTypes from "prop-types";
-import { withStyles } from "@material-ui/core/styles";
-import Stepper from "@material-ui/core/Stepper";
 import Step from "@material-ui/core/Step";
 import StepLabel from "@material-ui/core/StepLabel";
-import Button from "@material-ui/core/Button";
-import MapEditor from '../../components/MapEditor/index';
-import AnchorsEditor from '../../components/AnchorsEditor/index';
+import Stepper from "@material-ui/core/Stepper";
+import { withStyles } from "@material-ui/core/styles";
+import PropTypes from "prop-types";
+import React, { Component } from "react";
+import { compose } from "redux";
+import { connect } from "react-redux";
+import AnchorsEditor from "../../components/AnchorsEditor/index";
+import MapEditor from "../../components/MapEditor/index";
 import styles from "./styles";
 
-const steps = ["Upload floor map", "Add anchors"];
+const steps = ["Upload new map", "Add anchors"];
 
 function getStepContent(step) {
   switch (step) {
@@ -23,30 +24,12 @@ function getStepContent(step) {
 }
 
 class NewMap extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      activeStep: 0,
-      openEditDialog: false,
-    };
-  }
-
-  handleNext = () => {
-    const { activeStep } = this.state;
-    this.setState({ activeStep: activeStep + 1 });
-  };
-
-  handleBack = () => {
-    const { activeStep } = this.state;
-    this.setState({ activeStep: activeStep - 1 });
-  };
 
   render() {
-    const { classes } = this.props;
-    const { activeStep } = this.state;
+    const { classes, activeMapAddingStep } = this.props;
     return (
       <div>
-        <Stepper activeStep={activeStep}>
+        <Stepper activeStep={activeMapAddingStep}>
           {steps.map((label, index) => {
             return (
               <Step key={label}>
@@ -55,27 +38,7 @@ class NewMap extends Component {
             );
           })}
         </Stepper>
-        <div>
-          {getStepContent(activeStep)}
-          <div style={{display: 'flex', justifyContent: 'space-around'}}>
-            <Button
-              disabled={activeStep === 0}
-              onClick={this.handleBack}
-              className={classes.button}
-              variant="contained"
-            >
-              Back
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={this.handleNext}
-              className={classes.button}
-            >
-              {activeStep === steps.length - 1 ? "Finish" : "Next"}
-            </Button>
-          </div>
-        </div>
+        {getStepContent(activeMapAddingStep)}
       </div>
     );
   }
@@ -85,4 +48,13 @@ NewMap.propTypes = {
   classes: PropTypes.object,
 };
 
-export default withStyles(styles)(NewMap);
+const mapStateToProps = (state) => {
+  return {
+    activeMapAddingStep: state.ui.activeMapAddingStep,
+  };
+};
+
+export default compose(
+  withStyles(styles),
+  connect(mapStateToProps, null)
+)(NewMap);

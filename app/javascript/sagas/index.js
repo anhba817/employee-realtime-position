@@ -6,59 +6,94 @@ import {
   delay,
   takeLatest,
   takeEvery,
-  // select,
-} from 'redux-saga/effects';
+  select,
+} from "redux-saga/effects";
+import { getMapsSuccess, getMapsFailed } from "../actions/map";
 import {
-  getAllMaps,
-  getMapsSuccess,
-  getMapsFailed,
-} from '../actions/map';
+  addAnchorSuccess,
+  addAnchorFailed,
+  updateAnchorSuccess,
+  updateAnchorFailed,
+  deleteAnchorSuccess,
+  deleteAnchorFailed,
+  uploadCurrentMapSuccess,
+  uploadCurrentMapFailed,
+} from "../actions/edittingMap";
 import {
-  setUploadingMapNameSuccess,
-  setUploadingMapRatioSuccess,
-  updateNewAnchorSuccess,
-} from '../actions/uploadingMap';
-
-import * as mapActions from '../constants/map';
-import * as uploadingMapActions from '../constants/uploadingMap';
+  showLoading,
+  hideLoading,
+  setActiveMapAddingStep,
+} from "../actions/ui";
+import * as mapActions from "../constants/map";
+import * as edittingMapActions from "../constants/edittingMap";
+import * as mapService from "../services/map";
+import * as anchorService from "../services/anchor";
 
 function* getAllMapsSaga() {
-  // try {
-  //   const user = yield call(authService.getCurrentUser);
-  //   if (user) {
-  //     yield call(UserServices.verifyToken);
-  //     yield put(setCurrentUser(user));
-  //   } else {
-  //     yield put(removeCurrentUser());
-  //   }
-  // } catch (error) {
-  //   console.log(error);
-  //   yield put(removeCurrentUser());
-  // }
-  yield put(getMapsSuccess([]));
+  try {
+    const resp = yield call(mapService.getAllMaps);
+    yield put(getMapsSuccess(resp.data));
+  } catch (error) {
+    yield put(getMapsFailed(error));
+  }
   yield delay(500);
 }
 
-function* setUploadingMapNameSaga({ payload }) {
-  yield put(setUploadingMapNameSuccess(payload.name));
-  yield delay(500);
+function* uploadCurrentMapSaga({ payload }) {
+  try {
+    yield put(showLoading());
+    const resp = yield call(
+      mapService.uploadMap,
+      payload.image.file,
+      payload.name,
+      payload.ratio,
+      payload.width,
+      payload.height
+    );
+    yield put(uploadCurrentMapSuccess(resp.data));
+    yield put(setActiveMapAddingStep(1));
+  } catch (error) {
+    yield put(uploadCurrentMapFailed(error));
+  }
+  yield delay(250);
+  yield put(hideLoading());
 }
 
-function* setUploadingMapRatioSaga({ payload }) {
-  yield put(setUploadingMapRatioSuccess(payload.ratio));
-  yield delay(500);
+function* addAnchorSaga({ payload }) {
+  try {
+    yield put(showLoading());
+    const resp = yield call(anchorService.addAnchor, {
+      mapId: payload.mapId,
+      deviceId: payload.deviceId,
+      x: payload.x,
+      y: payload.y,
+    });
+    yield put(addAnchorSuccess(resp.data));
+  } catch (error) {
+    yield put(addAnchorFailed(error));
+  }
+  yield delay(250);
+  yield put(hideLoading());
 }
 
-function* updateNewAnchorSaga({ payload }) {
-  yield put(updateNewAnchorSuccess(payload));
-  yield delay(500);
+function* deleteAnchorSaga({ payload }) {
+  try {
+    yield put(showLoading());
+    yield call(anchorService.deleteAnchor, payload.mapId, payload.id);
+    console.log(payload);
+    yield put(deleteAnchorSuccess(payload.id));
+  } catch (error) {
+    yield put(deleteAnchorFailed(error));
+  }
+  yield delay(250);
+  yield put(hideLoading());
 }
 
 function* rootSaga() {
   yield takeLatest(mapActions.GET_MAPS, getAllMapsSaga);
-  yield takeLatest(uploadingMapActions.SET_UPLOADING_MAP_NAME, setUploadingMapNameSaga);
-  yield takeLatest(uploadingMapActions.SET_UPLOADING_MAP_RATIO, setUploadingMapRatioSaga);
-  yield takeLatest(uploadingMapActions.UPDATE_NEW_ANCHOR, updateNewAnchorSaga);
+  yield takeLatest(edittingMapActions.UPLOAD_MAP, uploadCurrentMapSaga);
+  yield takeLatest(edittingMapActions.ADD_ANCHOR, addAnchorSaga);
+  yield takeEvery(edittingMapActions.DELETE_ANCHOR, deleteAnchorSaga);
 }
 
 export default rootSaga;

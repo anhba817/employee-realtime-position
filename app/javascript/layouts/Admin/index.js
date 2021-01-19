@@ -15,44 +15,12 @@ class Admin extends Component {
     super(props);
     this.state = {
       mobileOpen: false,
-      featured_image: null,
+      image: null,
     };
   }
 
   handleDrawerToggle = () => {
     this.setState((prevState) => ({ mobileOpen: !prevState.mobileOpen }));
-  };
-
-  onImageChange = (event) => {
-    this.setState({ featured_image: event.target.files[0] });
-  };
-
-  uploadImage = () => {
-    const formData = new FormData();
-    const token = document.querySelector('meta[name="csrf-token"]').content;
-    formData.append("name", "Quan dao Nam Du");
-    formData.append("ratio", 0.1);
-    formData.append("image", this.state.featured_image);
-    formData.append("width", 1200);
-    formData.append("height", 700);
-    fetch("http://localhost:3000/api/maps", {
-      method: "POST",
-      headers: {
-        "X-CSRF-Token": token,
-      },
-      body: formData,
-    }).catch((error) => console.log(error));
-  };
-
-  updateImage = () => {
-    const formData = new FormData();
-    formData.append("name", "Quan dao Nam Du updated");
-    formData.append("ratio", 0.05);
-    formData.append("featured_image", this.state.featured_image);
-    fetch("http://localhost:3000/api/maps/6", {
-      method: "DELETE",
-      // body: formData
-    }).catch((error) => console.log(error));
   };
 
   render() {

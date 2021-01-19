@@ -65,7 +65,7 @@ class EditableMap extends Component {
       >
         <CardMedia
           className={classes.media}
-          image={mapInfo.img_url}
+          image={mapInfo.image.url}
           title={mapInfo.name}
         />
         <span className={clsx(classes.buttonWrapper, "hidden-button")}>

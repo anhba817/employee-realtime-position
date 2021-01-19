@@ -28,7 +28,7 @@ class MapManagement extends Component {
         <AddButton />
         {maps.map((m, index) => (
           <EditableMap
-            key={m.name}
+            key={m.id}
             mapInfo={m}
             active={index === selectedIndex}
             onClick={() => this.setActiveIndex(index)}

@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
-import * as uploadingMapActions from "../../actions/uploadingMap";
+import * as edittingMapActions from "../../actions/edittingMap";
 import styles from "./styles";
 import { Typography } from "@material-ui/core";
 
@@ -19,7 +19,7 @@ class AnchorDialog extends Component {
   constructor(props) {
     super(props);
     this.initialState = {
-      anchorId: "",
+      deviceId: "",
       x: 0,
       y: 0,
     };
@@ -55,19 +55,21 @@ class AnchorDialog extends Component {
   };
 
   handleSubmit = () => {
-    const { handleClose, uploadingMapActionCreators } = this.props;
-    const { anchorId, x, y } = this.state;
-    uploadingMapActionCreators.addNewAnchor({
-      anchorId,
+    const { handleClose, edittingMapActionCreators, edittingMap } = this.props;
+    const { deviceId, x, y } = this.state;
+    edittingMapActionCreators.addAnchor({
+      mapId: edittingMap.id,
+      deviceId,
       x,
       y
-    })
+    });
+    this.setState(this.initialState);
     handleClose();
   };
 
   render() {
     const { open, handleClose } = this.props;
-    const { anchorId, x, y } = this.state;
+    const { deviceId, x, y } = this.state;
     return (
       <Dialog
         open={open}
@@ -92,10 +94,10 @@ class AnchorDialog extends Component {
             <TextField
               fullWidth
               variant="outlined"
-              value={anchorId}
-              name="anchorId"
+              value={deviceId}
+              name="deviceId"
               onChange={this.handleOnChange}
-              style={{ marginTop: 5 }}
+              style={{ marginTop: 4 }}
               size="small"
             />
           </div>
@@ -108,7 +110,7 @@ class AnchorDialog extends Component {
               value={x}
               name="x"
               onChange={this.handleOnChange}
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 8 }}
               size="small"
             />
             <TextField
@@ -118,12 +120,12 @@ class AnchorDialog extends Component {
               value={y}
               name="y"
               onChange={this.handleOnChange}
-              style={{ marginTop: 10 }}
+              style={{ marginTop: 8 }}
               size="small"
             />
           </div>
         </DialogContent>
-        <DialogActions style={{ paddingLeft: 25, paddingRight: 25 }}>
+        <DialogActions style={{ paddingLeft: 24, paddingRight: 24 }}>
           <Button
             onClick={this.handleSubmit}
             variant="contained"
@@ -140,14 +142,14 @@ class AnchorDialog extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    uploadingMap: state.uploadingMap,
+    edittingMap: state.edittingMap,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    uploadingMapActionCreators: bindActionCreators(
-      uploadingMapActions,
+    edittingMapActionCreators: bindActionCreators(
+      edittingMapActions,
       dispatch
     ),
   };

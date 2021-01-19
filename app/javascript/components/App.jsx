@@ -8,17 +8,21 @@ import "react-toastify/dist/ReactToastify.css";
 import { bindActionCreators, compose } from "redux";
 import { connect } from "react-redux";
 import * as mapActions from "../actions/map";
-import * as commonActions from "../actions/common";
+import { CSRF_LOCAL_STORAGE_ID } from "../constants/common";
 import { ROUTES } from "./routes";
 import theme from "./theme";
 import Admin from "../layouts/Admin/index";
+import GlobalLoading from "../components/GlobalLoading/index";
 
 class App extends Component {
   componentDidMount() {
-    const { mapActionCreators, commonActionCreators } = this.props;
+    const { mapActionCreators } = this.props;
     mapActionCreators.getAllMaps();
     const token = document.querySelector('meta[name="csrf-token"]').content;
-    commonActionCreators.setCrsfToken(token);
+    localStorage.setItem(
+      CSRF_LOCAL_STORAGE_ID,
+      JSON.stringify({ csrf_token: token })
+    );
   }
 
   renderRoutes = (routs) => {
@@ -41,10 +45,9 @@ class App extends Component {
       <Router>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <Switch>
-            {this.renderRoutes(ROUTES)}
-          </Switch>
+          <Switch>{this.renderRoutes(ROUTES)}</Switch>
           <ToastContainer />
+          <GlobalLoading />
         </ThemeProvider>
       </Router>
     );
@@ -58,7 +61,6 @@ App.propTypes = {
 const mapDispatchToProps = (dispatch) => {
   return {
     mapActionCreators: bindActionCreators(mapActions, dispatch),
-    commonActionCreators: bindActionCreators(commonActions, dispatch),
   };
 };
 

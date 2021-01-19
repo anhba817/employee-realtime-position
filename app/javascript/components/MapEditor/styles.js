@@ -4,14 +4,14 @@ const styles = (theme) => ({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 16,
+    marginTop: 8,
   },
   gridItemText: {
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'space-between',
     alignItems: 'flex-start',
-    marginTop: 16,
+    marginTop: 8,
   },
   imageButton: {
     padding: 0,
@@ -25,7 +25,10 @@ const styles = (theme) => ({
   },
   logoSwitchLabel: {
     fontSize: 10,
-  }
+  },
+  button: {
+    marginRight: theme.spacing(1),
+  },
 });
 
 export default styles;

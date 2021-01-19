@@ -1,12 +1,12 @@
 import { combineReducers } from 'redux';
 import mapsReducer from './maps';
-import uploadingMapReducer from './uploadingMap';
-import commonReducer from './common';
+import edittingMapReducer from './edittingMap';
+import uiReducer from './ui';
 
 const myReducer = combineReducers({
   maps: mapsReducer,
-  uploadingMap: uploadingMapReducer,
-  common: commonReducer,
+  edittingMap: edittingMapReducer,
+  ui: uiReducer,
 });
 
 export default myReducer;

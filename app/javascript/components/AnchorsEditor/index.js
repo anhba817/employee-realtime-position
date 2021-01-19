@@ -1,14 +1,16 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
+import debounce from "lodash.debounce";
 import ReactCursorPosition, { INTERACTIONS } from "react-cursor-position";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
-import * as uploadingMapActions from "../../actions/uploadingMap";
+import * as edittingMapActions from "../../actions/edittingMap";
 import Grid from "@material-ui/core/Grid";
-import TextField from "@material-ui/core/TextField";
 import AnchorDialog from "../AnchorDialog/index";
+import AnchorEditor from "../AnchorEditor/index";
 import Draggable from "react-draggable";
+import Button from "@material-ui/core/Button";
 import styles from "./styles";
 
 class AnchorsEditor extends Component {
@@ -39,17 +41,18 @@ class AnchorsEditor extends Component {
           cursor.elementDimensions.height,
         ],
       });
+      this.reset();
     }
   };
 
   handleChange = (event) => {
-    const { uploadingMapActionCreators } = this.props;
+    const { edittingMapActionCreators } = this.props;
     const name = event.target.name;
     this.setState({ [name]: event.target.value });
     if (name === "name") {
-      uploadingMapActionCreators.setUploadingMapName(event.target.value);
+      edittingMapActionCreators.setUploadingMapName(event.target.value);
     } else if (name === "ratio") {
-      uploadingMapActionCreators.setUploadingMapRatio(event.target.value);
+      edittingMapActionCreators.setUploadingMapRatio(event.target.value);
     }
   };
 
@@ -72,86 +75,84 @@ class AnchorsEditor extends Component {
   };
 
   handleDragStop = (anchor) => () => {
-    const { uploadingMapActionCreators, uploadingMap } = this.props;
+    const { edittingMapActionCreators, edittingMap } = this.props;
     const { deltaPosition, elementDimensions } = this.state;
     const realX =
       anchor.x +
       Math.floor(
-        ((deltaPosition[0] * uploadingMap.size[0]) / elementDimensions[0]) * 100
+        ((deltaPosition[0] * edittingMap.width) / elementDimensions[0]) * 100
       ) /
         100;
     const realY =
       anchor.y +
       Math.floor(
-        ((deltaPosition[1] * uploadingMap.size[1]) / elementDimensions[1]) * 100
+        ((deltaPosition[1] * edittingMap.height) / elementDimensions[1]) * 100
       ) /
         100;
-    uploadingMapActionCreators.updateNewAnchor({
+    edittingMapActionCreators.updateNewAnchor({
       ...anchor,
       x: realX,
       y: realY,
     });
   };
 
+  reset = debounce(
+    () => {
+      this.rcp.reset();
+    },
+    100,
+    {
+      leading: false,
+      trailing: true,
+    }
+  );
+
+  handleCancel = () => {};
+
+  handleFinish = () => {};
+
   render() {
-    const { classes, uploadingMap } = this.props;
+    const { classes, edittingMap, reactCursorRef } = this.props;
     const {
       cursorPosition,
       elementDimensions,
       isImageSelected,
       openDialog,
     } = this.state;
-    let img_width = 1000;
-    let img_height = Math.floor(
-      (1000 * uploadingMap.size[1]) / uploadingMap.size[0]
+    const realX = Math.round(
+      (cursorPosition[0] * edittingMap.width) / elementDimensions[0]
     );
-    if (img_height > 500) {
-      img_height = 500;
-      img_width = Math.floor(
-        (500 * uploadingMap.size[0]) / uploadingMap.size[1]
-      );
-    }
-    const realX =
-      Math.floor(
-        ((cursorPosition[0] * uploadingMap.size[0]) / elementDimensions[0]) *
-          100
-      ) / 100;
-    const realY =
-      Math.floor(
-        ((cursorPosition[1] * uploadingMap.size[1]) / elementDimensions[1]) *
-          100
-      ) / 100;
+    const realY = Math.round(
+      (cursorPosition[1] * edittingMap.height) / elementDimensions[1]
+    );
     return (
       <>
         <Grid container spacing={1} style={{ padding: 8 }}>
-          <Grid item xs={12} className={classes.gridItem}>
+          <Grid item xs={10} className={classes.gridItem}>
             <ReactCursorPosition
-              activationInteractionMouse={INTERACTIONS.HOVER} //default
-              // hoverDelayInMs={150} //default 0
-              // hoverOffDelayInMs={50} //default 0
+              activationInteractionMouse={INTERACTIONS.HOVER}
               onPositionChanged={this.handleCursorMoved}
               onActivationChanged={this.changeImageSelected}
               className={clsx(classes.image, {
                 [classes.imageActive]: isImageSelected,
               })}
+              ref={(rcp) => (this.rcp = rcp)}
             >
               <img
-                src={uploadingMap.image.data_url}
-                style={{
-                  width: img_width,
-                  height: img_height,
-                }}
+                src={edittingMap.image.url}
+                width="100%"
                 onDoubleClick={this.openAnchorDialog}
               />
-              {uploadingMap.anchors.map((anchor) => {
+              {edittingMap.anchors.map((anchor) => {
                 const p_x = Math.floor(
-                  (anchor.x * elementDimensions[0]) / uploadingMap.size[0]
+                  (anchor.x * elementDimensions[0]) / edittingMap.width
                 );
                 const p_y = Math.floor(
-                  (anchor.y * elementDimensions[1]) / uploadingMap.size[1]
+                  (anchor.y * elementDimensions[1]) / edittingMap.height
                 );
                 return (
                   <div
+                    key={anchor.id}
                     style={{
                       position: "absolute",
                       top: p_y - 4,
@@ -168,7 +169,7 @@ class AnchorsEditor extends Component {
                       }}
                     />
                     <h5 style={{ color: "red", margin: 0, padding: 0 }}>
-                      {anchor.anchorId}
+                      {anchor.deviceId}
                     </h5>
                   </div>
                 );
@@ -190,40 +191,36 @@ class AnchorsEditor extends Component {
               ) : null}
             </ReactCursorPosition>
           </Grid>
-          {uploadingMap.anchors.map((anchor) => (
-            <>
-              <Grid item xs={4} className={classes.gridItemText}>
-                <TextField
-                  id={`${anchor.id}-1`}
-                  label="ID"
-                  variant="outlined"
-                  value={anchor.anchorId}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={4} className={classes.gridItem}>
-                <TextField
-                  id={`${anchor.id}-2`}
-                  label="X"
-                  variant="outlined"
-                  value={anchor.x}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-              <Grid item xs={4} className={classes.gridItem}>
-                <TextField
-                  id={`${anchor.id}-3`}
-                  label="Y"
-                  variant="outlined"
-                  value={anchor.y}
-                  fullWidth
-                  size="small"
-                />
-              </Grid>
-            </>
-          ))}
+          <Grid
+            item
+            xs={2}
+            className={classes.anchorList}
+          >
+            {edittingMap.anchors.map((anchor) => (
+              <AnchorEditor key={anchor.id} anchor={anchor} />
+            ))}
+          </Grid>
+          <Grid
+            item
+            xs={12}
+            style={{ display: "flex", justifyContent: "space-around" }}
+          >
+            <Button
+              onClick={this.handleCancel}
+              className={classes.button}
+              variant="contained"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={this.handleFinish}
+              className={classes.button}
+            >
+              Finish
+            </Button>
+          </Grid>
         </Grid>
         <AnchorDialog
           x={realX}
@@ -238,16 +235,13 @@ class AnchorsEditor extends Component {
 
 const mapStateToProps = (state) => {
   return {
-    uploadingMap: state.uploadingMap,
+    edittingMap: state.edittingMap,
   };
 };
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    uploadingMapActionCreators: bindActionCreators(
-      uploadingMapActions,
-      dispatch
-    ),
+    edittingMapActionCreators: bindActionCreators(edittingMapActions, dispatch),
   };
 };
 
