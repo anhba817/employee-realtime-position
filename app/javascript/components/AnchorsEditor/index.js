@@ -9,7 +9,6 @@ import * as edittingMapActions from "../../actions/edittingMap";
 import Grid from "@material-ui/core/Grid";
 import AnchorDialog from "../AnchorDialog/index";
 import AnchorEditor from "../AnchorEditor/index";
-import Draggable from "react-draggable";
 import Button from "@material-ui/core/Button";
 import styles from "./styles";
 
@@ -64,37 +63,37 @@ class AnchorsEditor extends Component {
     this.setState({ openDialog: false });
   };
 
-  handleDrag = (e, ui) => {
-    const { deltaPosition } = this.state;
-    this.setState({
-      deltaPosition: [
-        deltaPosition[0] + ui.deltaX,
-        deltaPosition[1] + ui.deltaY,
-      ],
-    });
-  };
+  // handleDrag = (e, ui) => {
+  //   const { deltaPosition } = this.state;
+  //   this.setState({
+  //     deltaPosition: [
+  //       deltaPosition[0] + ui.deltaX,
+  //       deltaPosition[1] + ui.deltaY,
+  //     ],
+  //   });
+  // };
 
-  handleDragStop = (anchor) => () => {
-    const { edittingMapActionCreators, edittingMap } = this.props;
-    const { deltaPosition, elementDimensions } = this.state;
-    const realX =
-      anchor.x +
-      Math.floor(
-        ((deltaPosition[0] * edittingMap.width) / elementDimensions[0]) * 100
-      ) /
-        100;
-    const realY =
-      anchor.y +
-      Math.floor(
-        ((deltaPosition[1] * edittingMap.height) / elementDimensions[1]) * 100
-      ) /
-        100;
-    edittingMapActionCreators.updateNewAnchor({
-      ...anchor,
-      x: realX,
-      y: realY,
-    });
-  };
+  // handleDragStop = (anchor) => () => {
+  //   const { edittingMapActionCreators, edittingMap } = this.props;
+  //   const { deltaPosition, elementDimensions } = this.state;
+  //   const realX =
+  //     anchor.x +
+  //     Math.floor(
+  //       ((deltaPosition[0] * edittingMap.width) / elementDimensions[0]) * 100
+  //     ) /
+  //       100;
+  //   const realY =
+  //     anchor.y +
+  //     Math.floor(
+  //       ((deltaPosition[1] * edittingMap.height) / elementDimensions[1]) * 100
+  //     ) /
+  //       100;
+  //   edittingMapActionCreators.updateNewAnchor({
+  //     ...anchor,
+  //     x: realX,
+  //     y: realY,
+  //   });
+  // };
 
   reset = debounce(
     () => {
@@ -112,7 +111,7 @@ class AnchorsEditor extends Component {
   handleFinish = () => {};
 
   render() {
-    const { classes, edittingMap, reactCursorRef } = this.props;
+    const { classes, edittingMap } = this.props;
     const {
       cursorPosition,
       elementDimensions,
