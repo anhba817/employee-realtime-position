@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
 import clsx from "clsx";
 import debounce from "lodash.debounce";
-import ReactCursorPosition, { INTERACTIONS } from "react-cursor-position";
+import ReactCursorPosition, { INTERACTIONS } from "@appinfini/react-cursor-position";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
 import * as edittingMapActions from "../../actions/edittingMap";
