@@ -16,6 +16,8 @@ const styles = (theme) => ({
   image: {
     padding: 0,
     position: "relative",
+    width: "100%",
+    minHeight: 10,
   },
   imageActive: {
     border: '1px solid',
