@@ -21,6 +21,12 @@ const styles = (theme) => ({
     border: '1px solid',
     borderColor: theme.palette.primary.main,
   },
+  imageLoaded: {
+    display: 'initial',
+  },
+  imageNotLoaded: {
+    display: 'none',
+  },
   anchorList: {
     display: 'flex',
     flexDirection: 'column',

@@ -140,14 +140,17 @@ class AnchorsEditor extends Component {
               })}
               ref={(rcp) => (this.rcp = rcp)}
             >
-              {imageLoaded ? (
-                <img
-                  src={edittingMap.image.url}
-                  width="100%"
-                  onDoubleClick={this.openAnchorDialog}
-                  onLoad={() => this.setState({ imageLoaded: true })}
-                />
-              ) : (
+              <img
+                className={clsx({
+                  [classes.imageLoaded]: imageLoaded,
+                  [classes.imageNotLoaded]: !imageLoaded,
+                })}
+                src={edittingMap.image.url}
+                width="100%"
+                onDoubleClick={this.openAnchorDialog}
+                onLoad={() => this.setState({ imageLoaded: true })}
+              />
+              {imageLoaded ? null : (
                 <Skeleton variant="rect" width={400} height={400} />
               )}
               {edittingMap.anchors.map((anchor) => {
