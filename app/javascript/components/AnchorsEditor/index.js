@@ -10,6 +10,7 @@ import Grid from "@material-ui/core/Grid";
 import AnchorDialog from "../AnchorDialog/index";
 import AnchorEditor from "../AnchorEditor/index";
 import Button from "@material-ui/core/Button";
+import Skeleton from "@material-ui/lab/Skeleton";
 import styles from "./styles";
 
 class AnchorsEditor extends Component {
@@ -22,6 +23,7 @@ class AnchorsEditor extends Component {
       selectedAnchorIndex: 0,
       openDialog: false,
       deltaPosition: [0, 0],
+      imageLoaded: false,
     };
     this.state = this.initialState;
   }
@@ -117,6 +119,7 @@ class AnchorsEditor extends Component {
       elementDimensions,
       isImageSelected,
       openDialog,
+      imageLoaded,
     } = this.state;
     const realX = Math.round(
       (cursorPosition[0] * edittingMap.width) / elementDimensions[0]
@@ -137,11 +140,16 @@ class AnchorsEditor extends Component {
               })}
               ref={(rcp) => (this.rcp = rcp)}
             >
-              <img
-                src={edittingMap.image.url}
-                width="100%"
-                onDoubleClick={this.openAnchorDialog}
-              />
+              {imageLoaded ? (
+                <img
+                  src={edittingMap.image.url}
+                  width="100%"
+                  onDoubleClick={this.openAnchorDialog}
+                  onLoad={() => this.setState({ imageLoaded: true })}
+                />
+              ) : (
+                <Skeleton variant="rect" width={400} height={400} />
+              )}
               {edittingMap.anchors.map((anchor) => {
                 const p_x = Math.floor(
                   (anchor.x * elementDimensions[0]) / edittingMap.width
@@ -190,11 +198,7 @@ class AnchorsEditor extends Component {
               ) : null}
             </ReactCursorPosition>
           </Grid>
-          <Grid
-            item
-            xs={2}
-            className={classes.anchorList}
-          >
+          <Grid item xs={2} className={classes.anchorList}>
             {edittingMap.anchors.map((anchor) => (
               <AnchorEditor key={anchor.id} anchor={anchor} />
             ))}
