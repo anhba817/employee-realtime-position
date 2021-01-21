@@ -6,7 +6,7 @@ class MapSerializer < ActiveModel::Serializer
   def image
     if object.image.attached?
       {
-        url: url_for(object.image)
+        url: rails_blob_url(object.image)
       }
     end
   end
