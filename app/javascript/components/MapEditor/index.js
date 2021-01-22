@@ -5,6 +5,7 @@ import clsx from "clsx";
 import ImageUploading from "react-images-uploading";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
+import * as mapActions from "../../actions/map";
 import * as uiActions from "../../actions/ui";
 import * as edittingMapActions from "../../actions/edittingMap";
 import Grid from "@material-ui/core/Grid";
@@ -22,20 +23,41 @@ class MapEditor extends Component {
       ratio: 1.0,
       width: 0,
       height: 0,
+      isImageChanged: false,
     };
     this.state = this.initialState;
   }
 
+  componentDidMount() {
+    const { edittingMap } = this.props;
+    if (edittingMap.id !== "") {
+      this.setState({
+        image: edittingMap.image,
+        name: edittingMap.name,
+        ratio: edittingMap.ratio,
+        width: edittingMap.width,
+        height: edittingMap.height,
+      });
+    }
+  }
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.edittingMap.id !== this.props.edittingMap.id) {
+      this.setState({
+        image: this.props.edittingMap.image,
+        name: this.props.edittingMap.name,
+        ratio: this.props.edittingMap.ratio,
+        width: this.props.edittingMap.width,
+        height: this.props.edittingMap.height,
+      });
+    }
+  }
+
   onChangeImage = (imageList) => {
-    this.setState({ image: imageList[0] });
+    this.setState({ image: imageList[0], isImageChanged: true });
   };
 
   onImgLoad = ({ target: img }) => {
     this.setState({ width: img.naturalWidth, height: img.naturalHeight });
-  };
-
-  clearUploadingMap = () => {
-    this.setState(this.initialState);
   };
 
   handleChange = (event) => {
@@ -44,15 +66,45 @@ class MapEditor extends Component {
   };
 
   handleCancel = () => {
-    const { history } = this.props;
+    const { history, edittingMapActionCreators } = this.props;
+    edittingMapActionCreators.clearEdittingMap();
     this.setState(this.initialState);
-    history.push("/");
+    history.push("/maps");
   };
 
   handleNext = () => {
-    const { image, name, ratio, width, height } = this.state;
-    const { edittingMapActionCreators } = this.props;
-    edittingMapActionCreators.uploadCurrentMap(image, name, ratio, width, height);
+    const { image, name, ratio, width, height, isImageChanged } = this.state;
+    const { uiActionCreators, mapActionCreators, edittingMap } = this.props;
+    if (edittingMap.id !== "") {
+      if (isImageChanged) {
+        // Re-upload if image changed
+        mapActionCreators.updateMap(edittingMap.id, {
+          image: image.file,
+          name,
+          ratio,
+          width,
+          height,
+        });
+      } else {
+        // otherwise update map info only
+        if (edittingMap.name !== name || edittingMap.ratio !== ratio) {
+          mapActionCreators.updateMap(edittingMap.id, {
+            name,
+            ratio,
+          });
+        } else {
+          uiActionCreators.setActiveMapAddingStep(1);
+        }
+      }
+    } else {
+      mapActionCreators.addMap(
+        image,
+        name,
+        ratio,
+        width,
+        height
+      );
+    }
   };
 
   render() {
@@ -96,7 +148,7 @@ class MapEditor extends Component {
             value={images}
             onChange={this.onChangeImage}
             maxNumber={1}
-            dataURLKey="data_url"
+            dataURLKey="url"
           >
             {({
               imageList,
@@ -127,7 +179,7 @@ class MapEditor extends Component {
                 >
                   {imageList.length > 0 ? (
                     <img
-                      src={imageList[0].data_url}
+                      src={imageList[0].url}
                       style={{ margin: 10, width: "100%" }}
                       alt=""
                       onLoad={this.onImgLoad}
@@ -136,18 +188,6 @@ class MapEditor extends Component {
                     "Click or Drop here"
                   )}
                 </Button>
-                {imageList.length > 0 ? (
-                  <Button
-                    variant="outlined"
-                    size="small"
-                    onClick={() => {
-                      onImageRemoveAll();
-                      this.clearUploadingMap();
-                    }}
-                  >
-                    Remove
-                  </Button>
-                ) : null}
               </div>
             )}
           </ImageUploading>
@@ -178,15 +218,22 @@ class MapEditor extends Component {
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    edittingMap: state.edittingMap,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => {
   return {
     uiActionCreators: bindActionCreators(uiActions, dispatch),
     edittingMapActionCreators: bindActionCreators(edittingMapActions, dispatch),
+    mapActionCreators: bindActionCreators(mapActions, dispatch),
   };
 };
 
 export default compose(
   withRouter,
   withStyles(styles),
-  connect(null, mapDispatchToProps)
+  connect(mapStateToProps, mapDispatchToProps)
 )(MapEditor);

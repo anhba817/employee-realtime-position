@@ -21,7 +21,7 @@ class Api::AnchorsController < ApplicationController
     # PUT /maps/:map_id/anchors/:id
     def update
       @anchor.update(anchor_params)
-      head :no_content
+      json_response(@anchor)
     end
   
     # DELETE /maps/:map_id/anchors/:id

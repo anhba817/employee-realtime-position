@@ -22,7 +22,7 @@ class Api::MapsController < ApplicationController
     # PUT /maps/:id
     def update
       @map.update(map_params)
-      head :no_content
+      json_response(@map)
     end
   
     # DELETE /maps/:id

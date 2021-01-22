@@ -1,11 +1,13 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
+import { withRouter } from "react-router";
 import clsx from "clsx";
 import debounce from "lodash.debounce";
 import ReactCursorPosition, { INTERACTIONS } from "@appinfini/react-cursor-position";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
 import * as edittingMapActions from "../../actions/edittingMap";
+import * as uiActions from "../../actions/ui";
 import Grid from "@material-ui/core/Grid";
 import AnchorDialog from "../AnchorDialog/index";
 import AnchorEditor from "../AnchorEditor/index";
@@ -20,9 +22,7 @@ class AnchorsEditor extends Component {
       isImageSelected: false,
       cursorPosition: [0, 0],
       elementDimensions: [1, 1],
-      selectedAnchorIndex: 0,
       openDialog: false,
-      deltaPosition: [0, 0],
       imageLoaded: false,
     };
     this.state = this.initialState;
@@ -46,17 +46,6 @@ class AnchorsEditor extends Component {
     }
   };
 
-  handleChange = (event) => {
-    const { edittingMapActionCreators } = this.props;
-    const name = event.target.name;
-    this.setState({ [name]: event.target.value });
-    if (name === "name") {
-      edittingMapActionCreators.setUploadingMapName(event.target.value);
-    } else if (name === "ratio") {
-      edittingMapActionCreators.setUploadingMapRatio(event.target.value);
-    }
-  };
-
   openAnchorDialog = () => {
     this.setState({ openDialog: true });
   };
@@ -64,38 +53,6 @@ class AnchorsEditor extends Component {
   closeAnchorDialog = () => {
     this.setState({ openDialog: false });
   };
-
-  // handleDrag = (e, ui) => {
-  //   const { deltaPosition } = this.state;
-  //   this.setState({
-  //     deltaPosition: [
-  //       deltaPosition[0] + ui.deltaX,
-  //       deltaPosition[1] + ui.deltaY,
-  //     ],
-  //   });
-  // };
-
-  // handleDragStop = (anchor) => () => {
-  //   const { edittingMapActionCreators, edittingMap } = this.props;
-  //   const { deltaPosition, elementDimensions } = this.state;
-  //   const realX =
-  //     anchor.x +
-  //     Math.floor(
-  //       ((deltaPosition[0] * edittingMap.width) / elementDimensions[0]) * 100
-  //     ) /
-  //       100;
-  //   const realY =
-  //     anchor.y +
-  //     Math.floor(
-  //       ((deltaPosition[1] * edittingMap.height) / elementDimensions[1]) * 100
-  //     ) /
-  //       100;
-  //   edittingMapActionCreators.updateNewAnchor({
-  //     ...anchor,
-  //     x: realX,
-  //     y: realY,
-  //   });
-  // };
 
   reset = debounce(
     () => {
@@ -108,9 +65,19 @@ class AnchorsEditor extends Component {
     }
   );
 
-  handleCancel = () => {};
+  handleGoBack = () => {
+    const { uiActionCreators } = this.props;
+    this.setState(this.initialState);
+    uiActionCreators.setActiveMapAddingStep(0);
+  };
 
-  handleFinish = () => {};
+  handleFinish = () => {
+    const { history, edittingMapActionCreators, uiActionCreators } = this.props;
+    edittingMapActionCreators.clearEdittingMap();
+    this.setState(this.initialState);
+    uiActionCreators.setActiveMapAddingStep(0);
+    history.push("/maps");
+  };
 
   render() {
     const { classes, edittingMap } = this.props;
@@ -212,11 +179,11 @@ class AnchorsEditor extends Component {
             style={{ display: "flex", justifyContent: "space-around" }}
           >
             <Button
-              onClick={this.handleCancel}
+              onClick={this.handleGoBack}
               className={classes.button}
               variant="contained"
             >
-              Cancel
+              Back
             </Button>
             <Button
               variant="contained"
@@ -248,10 +215,12 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     edittingMapActionCreators: bindActionCreators(edittingMapActions, dispatch),
+    uiActionCreators: bindActionCreators(uiActions, dispatch),
   };
 };
 
 export default compose(
   withStyles(styles),
+  withRouter,
   connect(mapStateToProps, mapDispatchToProps)
 )(AnchorsEditor);

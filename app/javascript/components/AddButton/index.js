@@ -1,25 +1,29 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import clsx from "clsx";
-import Card from "@material-ui/core/Card";
 import { withRouter } from "react-router";
 import { compose } from "redux";
-import Tooltip from "@material-ui/core/Tooltip";
-import AddLocationTwoToneIcon from '@material-ui/icons/AddLocationTwoTone';
+import Button from "@material-ui/core/Button";
+import AddLocationTwoToneIcon from "@material-ui/icons/AddLocationTwoTone";
 import styles from "./styles";
 
 class AddButton extends Component {
+  handleClick = () => {
+    const { history } = this.props;
+    console.log("goto new map");
+    history.push("/maps/new");
+  };
+
   render() {
-    const { classes, history, className } = this.props;
     return (
-      <Card
-        className={clsx(classes.container, className)}
-        onClick={() => history.push("/new")}
-      >
-        <Tooltip className={classes.media} title="Add new map">
-          <AddLocationTwoToneIcon />
-        </Tooltip>
-      </Card>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<AddLocationTwoToneIcon />}
+          onClick={this.handleClick}
+          style={{ width: 150, margin: 16}}
+        >
+          Add new map
+        </Button>
     );
   }
 }

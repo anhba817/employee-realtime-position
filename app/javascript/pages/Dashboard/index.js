@@ -8,7 +8,7 @@ class Dashboard extends Component {
     const { classes } = this.props;
     return (
       <div>
-        This is dashboard
+        To be implemented!
       </div>
     );
   }

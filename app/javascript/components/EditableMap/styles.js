@@ -7,13 +7,13 @@ const styles = (theme) => ({
     display: 'inline-flex',
     flexDirection: 'column',
     textAlign: 'left',
-    margin: 15,
+    margin: 8,
     position: 'relative',
     lineHeight: 24,
     cursor: 'pointer',
     borderRadius: 6,
     backgroundColor: theme.palette.background.default,
-    border: `1px solid ${theme.palette.background.default}`,
+    border: `1px solid ${theme.palette.primary.main}`,
     "& .hidden-button": {
       display: "none"
     },
@@ -30,7 +30,7 @@ const styles = (theme) => ({
     height: 200,
   },
   active: {
-    border: '1px solid',
+    border: '2px solid',
     borderColor: theme.palette.primary.main,
   },
   buttonWrapper: {

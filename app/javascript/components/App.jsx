@@ -16,13 +16,13 @@ import GlobalLoading from "../components/GlobalLoading/index";
 
 class App extends Component {
   componentDidMount() {
-    const { mapActionCreators } = this.props;
-    mapActionCreators.getAllMaps();
     const token = document.querySelector('meta[name="csrf-token"]').content;
     localStorage.setItem(
       CSRF_LOCAL_STORAGE_ID,
       JSON.stringify({ csrf_token: token })
     );
+    const { mapActionCreators } = this.props;
+    mapActionCreators.getAllMaps();
   }
 
   renderRoutes = (routs) => {

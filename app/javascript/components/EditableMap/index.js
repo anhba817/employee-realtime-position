@@ -1,8 +1,13 @@
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
+import { withRouter } from "react-router";
 import clsx from "clsx";
+import { connect } from "react-redux";
+import { bindActionCreators, compose } from "redux";
+import * as mapActions from "../../actions/map";
 import Card from "@material-ui/core/Card";
 import CardMedia from "@material-ui/core/CardMedia";
+import CardContent from '@material-ui/core/CardContent';
 import IconButton from "@material-ui/core/IconButton";
 import Typography from "@material-ui/core/Typography";
 import CloseIcon from "@material-ui/icons/Close";
@@ -15,7 +20,6 @@ class EditableMap extends Component {
     super(props);
     this.state = {
       openDeleteDialog: false,
-      openEditDialog: false,
     };
   }
 
@@ -29,20 +33,15 @@ class EditableMap extends Component {
   };
 
   handleDelete = () => {
-    const { handleDeleteItem, content } = this.props;
+    const { mapInfo, mapActionCreators } = this.props;
     this.setState({ openDeleteDialog: false });
-    if (handleDeleteItem) {
-      handleDeleteItem(content.id);
-    }
+    mapActionCreators.deleteMap(mapInfo.id);
   };
 
   handleEditClick = (event) => {
-    this.setState({ openEditDialog: true });
+    const { history, mapInfo } = this.props;
+    history.push(`/maps/edit/${mapInfo.id}`);
     event.stopPropagation();
-  };
-
-  handleCloseEditDialog = () => {
-    this.setState({ openEditDialog: false });
   };
 
   render() {
@@ -55,7 +54,7 @@ class EditableMap extends Component {
       mapInfo,
       onClick,
     } = this.props;
-    const { openDeleteDialog, openEditDialog } = this.state;
+    const { openDeleteDialog } = this.state;
     return (
       <Card
         className={clsx(classes.container, className, {
@@ -68,6 +67,14 @@ class EditableMap extends Component {
           image={mapInfo.image.url}
           title={mapInfo.name}
         />
+        <CardContent>
+          <Typography gutterBottom variant="h5" component="h2">
+          {mapInfo.name}
+          </Typography>
+          <Typography variant="body2" color="textSecondary" component="p">
+            Number of anchors: {mapInfo.anchors.length}
+          </Typography>
+        </CardContent>
         <span className={clsx(classes.buttonWrapper, "hidden-button")}>
           {editable ? (
             <IconButton
@@ -93,16 +100,24 @@ class EditableMap extends Component {
           handleClose={this.handleCloseDeleteDialog}
           handleOKClick={this.handleDelete}
         />
-        <ConfirmationDialog
-          open={openEditDialog}
-          title="Edit form not built"
-          text="You cannot undo this deletion"
-          handleClose={this.handleCloseEditDialog}
-          handleOKClick={this.handleCloseEditDialog}
-        />
       </Card>
     );
   }
 }
+const mapStateToProps = (state) => {
+  return {
+    maps: state.maps,
+  };
+};
 
-export default withStyles(styles)(EditableMap);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    mapActionCreators: bindActionCreators(mapActions, dispatch),
+  };
+};
+
+export default compose(
+  withRouter,
+  withStyles(styles),
+  connect(null, mapDispatchToProps)
+)(EditableMap);

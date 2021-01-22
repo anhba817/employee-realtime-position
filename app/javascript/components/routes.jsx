@@ -5,6 +5,7 @@ import React from "react";
 import Dashboard from "../pages/Dashboard/index";
 import MapManagement from "../pages/MapManagement/index";
 import NewMap from "../pages/NewMap/index";
+import EditMap from "../pages/EditMap/index";
 
 const ROUTES = [
   {
@@ -26,11 +27,20 @@ const ROUTES = [
     listed: true,
   },
   {
-    path: "/new",
+    path: "/maps/new",
     name: "Add new map",
     icon: EditLocationIcon,
-    tooltip: "Add new floor maps",
+    tooltip: "Add new floor map",
     component: () => <NewMap />,
+    exact: true,
+    listed: false,
+  },
+  {
+    path: "/maps/edit/:id",
+    name: "Edit map",
+    icon: EditLocationIcon,
+    tooltip: "Edit floor map",
+    component: () => <EditMap />,
     exact: true,
     listed: false,
   },

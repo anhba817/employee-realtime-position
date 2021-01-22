@@ -1,4 +1,5 @@
 import * as edittingMapConstants from "../constants/edittingMap";
+import * as mapConstants from "../constants/map";
 import { toastError, toastSuccess } from "../common/toastHelper";
 
 const initialState = {
@@ -13,59 +14,48 @@ const initialState = {
 
 let tmpAnchors = [];
 
-const uploadingMapReducer = (state = initialState, action) => {
+const edittingMapReducer = (state = initialState, action) => {
   switch (action.type) {
-    case edittingMapConstants.UPLOAD_MAP_SUCCESS:
+    case edittingMapConstants.SET_EDITTING_MAP:
       return {
-        ...state,
-        id: action.payload.data.id,
-        name: action.payload.data.name,
-        ratio: action.payload.data.ratio,
-        width: action.payload.data.width,
-        height: action.payload.data.height,
-        image: action.payload.data.image,
-        anchors: action.payload.data.anchors,
+        ...action.payload.map,
       };
-    case edittingMapConstants.UPLOAD_MAP_FAILED:
+    case edittingMapConstants.CLEAR_EDITTING_MAP:
+      return { ...initialState };
+    case edittingMapConstants.GET_AND_SET_EDITTING_MAP_SUCCESS:
+      return {
+        ...action.payload.data,
+      };
+    case edittingMapConstants.GET_AND_SET_EDITTING_FAILED:
       toastError(action.payload.error);
       return {
         ...state,
       };
-    case edittingMapConstants.ADD_ANCHOR_SUCCESS:
+    case mapConstants.ADD_ANCHOR_SUCCESS:
       return {
-        ...state,
-        anchors: [...action.payload.data.anchors],
+        ...action.payload.data,
       };
-    case edittingMapConstants.ADD_ANCHOR_FAILED:
-      toastError(action.payload.error);
-      return {
-        ...state,
-      };
-    case edittingMapConstants.UPDATE_ANCHOR_SUCCESS:
-      console.log(action.payload.data);
-      return {
-        ...state,
-      };
-    case edittingMapConstants.UPDATE_ANCHOR_FAILED:
-      toastError(action.payload.error);
-      return {
-        ...state,
-      };
-    case edittingMapConstants.DELETE_ANCHOR_SUCCESS:
+    case mapConstants.DELETE_ANCHOR_SUCCESS:
       tmpAnchors = state.anchors;
-      tmpAnchors = tmpAnchors.filter(anchor => anchor.id !== action.payload.id);
+      tmpAnchors = tmpAnchors.filter(
+        (anchor) => anchor.id !== action.payload.id
+      );
       return {
         ...state,
-        anchors: tmpAnchors,
+        anchors: [...tmpAnchors],
       };
-    case edittingMapConstants.DELETE_ANCHOR_FAILED:
-      toastError(action.payload.error);
+    case mapConstants.UPDATE_ANCHOR_SUCCESS:
+      tmpAnchors = state.anchors;
+      tmpAnchors = tmpAnchors.map((anchor) =>
+        anchor.id !== action.payload.data.id ? anchor : action.payload.data
+      );
       return {
         ...state,
+        anchors: [...tmpAnchors],
       };
     default:
       return state;
   }
 };
 
-export default uploadingMapReducer;
+export default edittingMapReducer;

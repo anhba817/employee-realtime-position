@@ -11,7 +11,7 @@ import TextField from "@material-ui/core/TextField";
 import Zoom from "@material-ui/core/Zoom";
 import { connect } from "react-redux";
 import { bindActionCreators, compose } from "redux";
-import * as edittingMapActions from "../../actions/edittingMap";
+import * as mapActions from "../../actions/map";
 import styles from "./styles";
 import { Typography } from "@material-ui/core";
 
@@ -55,9 +55,9 @@ class AnchorDialog extends Component {
   };
 
   handleSubmit = () => {
-    const { handleClose, edittingMapActionCreators, edittingMap } = this.props;
+    const { handleClose, mapActionCreators, edittingMap } = this.props;
     const { deviceId, x, y } = this.state;
-    edittingMapActionCreators.addAnchor({
+    mapActionCreators.addAnchor({
       mapId: edittingMap.id,
       deviceId,
       x,
@@ -148,8 +148,8 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    edittingMapActionCreators: bindActionCreators(
-      edittingMapActions,
+    mapActionCreators: bindActionCreators(
+      mapActions,
       dispatch
     ),
   };
