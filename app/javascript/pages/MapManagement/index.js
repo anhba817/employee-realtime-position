@@ -8,7 +8,6 @@ import * as mapActions from "../../actions/map";
 import * as edittingMapActions from "../../actions/edittingMap";
 import styles from "./styles";
 import EditableMap from "../../components/EditableMap/index";
-import AddButton from "../../components/AddButton/index";
 import Button from "@material-ui/core/Button";
 import AddLocationTwoToneIcon from "@material-ui/icons/AddLocationTwoTone";
 
@@ -46,7 +45,7 @@ class MapManagement extends Component {
           color="primary"
           startIcon={<AddLocationTwoToneIcon />}
           onClick={() => history.push("/maps/new")}
-          style={{ margin: 16 }}
+          style={{ margin: 16, marginLeft: 8 }}
         >
           Add new map
         </Button>

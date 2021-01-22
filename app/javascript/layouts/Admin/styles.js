@@ -26,6 +26,10 @@ const styles = (theme) => ({
     marginTop: '30px',
     padding: '30px 15px',
     minHeight: 'calc(100vh - 123px)',
+    [theme.breakpoints.up('md')]: {
+      marginTop: 0,
+      padding: '0px 15px',
+    },
   },
   container: {
     marginTop: '10px',

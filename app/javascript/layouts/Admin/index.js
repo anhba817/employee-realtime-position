@@ -1,4 +1,4 @@
-import { Typography } from "@material-ui/core";
+import Hidden from "@material-ui/core/Hidden";
 import { withStyles } from "@material-ui/core/styles";
 import PropTypes from "prop-types";
 import React, { Component } from "react";
@@ -43,7 +43,9 @@ class Admin extends Component {
             suppressScrollY: false,
           }}
         >
-          <Navbar handleDrawerToggle={this.handleDrawerToggle} />
+          <Hidden mdUp implementation="css">
+            <Navbar handleDrawerToggle={this.handleDrawerToggle} />
+          </Hidden>
           <div className={classes.content}>
             <div className={classes.container}>{children}</div>
           </div>
